@@ -20,7 +20,19 @@ class TaskController extends Controller
     {
         if (isset(auth()->user()->id)) {
             $id_user = auth()->user()->id;
-            $user_tasks = Task::where('id_user', $id_user)->where('done_at', NULL)->orderBy('created_at')->get();
+            $user_tasks = Task::where('id_user', $id_user)->where('done_at', NULL)->orderBy('created_at', 'desc')->get();
+            return $user_tasks;
+        }
+        return '{
+            "error":"Sem permissão para acesso"
+        }';
+    }
+
+    public function selectFinish()
+    {
+        if (isset(auth()->user()->id)) {
+            $id_user = auth()->user()->id;
+            $user_tasks = Task::where('id_user', $id_user)->whereNotNull('done_at')->orderBy('created_at', 'desc')->get();
             return $user_tasks;
         }
         return '{
@@ -32,7 +44,7 @@ class TaskController extends Controller
     {
 
         if (isset(auth()->user()->id) === true) {
-            
+
             $task = Task::find($request->id_task);
             $task->title = $request->title;
             $task->description = $request->description;
@@ -62,6 +74,35 @@ class TaskController extends Controller
 
             return redirect('home');
         } else {
+            return '{
+                "error":"Sem permissão para acesso"
+            }';
+        }
+    }
+
+    public function alterStatus($id_task)
+    {
+        if (isset(auth()->user()->id) === true) {
+
+            $task = Task::find($id_task);
+
+            if ($task->id_user == auth()->user()->id) {
+
+                    $task->done_at = Carbon::now();
+                    $task->save();
+
+                    return redirect('home');
+
+            } else {
+
+                return '{
+                    "error":"Operação ilegal"
+                }';
+            }
+
+            return $task;
+        } else {
+
             return '{
                 "error":"Sem permissão para acesso"
             }';
