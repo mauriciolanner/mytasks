@@ -9,7 +9,7 @@
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+ */
 
 Route::get('/', function () {
     return view('welcome');
@@ -24,3 +24,7 @@ Route::post('/insert', 'TaskController@create')->name('insert');
 Route::post('/update', 'TaskController@update')->name('update');
 Route::get('/alterstatus/{id}', 'TaskController@alterStatus')->name('alters');
 Route::get('/delet/{id}', 'TaskController@delet')->name('delet');
+Route::post('/inseririmc', 'HomeController@imc')->name('imcinsert');
+Route::get('/imc', function () {
+    return view('imc');
+});
